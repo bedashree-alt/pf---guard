@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PF Guard - Online Portal</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 { color: #5A20CB; }
+    input, button {
+      padding: 10px;
+      margin: 15px;
+      width: 260px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #5A20CB;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .link {
+      margin-top: 25px;
+      display: block;
+      color: #0077cc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PF Guard – Compliance Checker</h1>
+  <p>Enter your salary to calculate PF contributions</p>
+
+  <input type="number" id="salary" placeholder="Enter Basic Salary (₹)">
+  <br>
+  <input type="number" id="actualEmployer" placeholder="Employer Share (from slip ₹)">
+  <br>
+  <button onclick="calculatePF()">Check PF</button>
+
+  <div class="result" id="pfOutput"></div>
+
+  <a class="link" href="https://epfigms.gov.in/" target="_blank">
+    🔗 File Complaint to EPFO Grievance Portal
+  </a>
+
+  <script>
+    function calculatePF() {
+      let salary = parseFloat(document.getElementById("salary").value);
+      let employerGiven = parseFloat(document.getElementById("actualEmployer").value);
+
+      if (!salary || !employerGiven) {
+        alert("Please enter all details correctly.");
+        return;
+      }
+
+      let empShare = salary * 0.12;
+      let expectedEmployerShare = salary * 0.12;
+      let difference = expectedEmployerShare - employerGiven;
+
+      let message = `
+        <strong>Employee Share:</strong> ₹${empShare.toFixed(2)}<br>
+        <strong>Expected Employer Share:</strong> ₹${expectedEmployerShare.toFixed(2)}<br>
+        <strong>Given by Employer:</strong> ₹${employerGiven.toFixed(2)}<br>
+        <strong>Difference:</strong> ₹${difference.toFixed(2)}<br><br>
+      `;
+
+      if (difference > 0.1) {
+        message += "<span style='color:red;'>❌ Your employer may be underpaying PF. Consider filing a complaint.</span>";
+      } else {
+        message += "<span style='color:green;'>✅ PF seems correct. You're safe!</span>";
+      }
+
+      document.getElementById("pfOutput").innerHTML = message;
+    }
+  </script>
+
+</body>
+</html>
