@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PF Guard - Multi-Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f8f8f8; }
+    .tab-btns { display: flex; flex-wrap: wrap; background: #4b0082; }
+    .tab-btns button { flex: 1; padding: 12px; border: none; background: #4b0082; color: #fff; cursor: pointer; }
+    .tab-btns button.active { background: #6a0dad; }
+    .tab-content { display: none; padding: 20px; background: #fff; }
+    .tab-content.active { display: block; }
+    input, textarea, select { width: 100%; padding: 8px; margin: 10px 0; }
+    button.action { background: #6a0dad; color: white; padding: 10px 16px; border: none; cursor: pointer; }
+  </style>
+</head>
+<body><div class="tab-btns">
+  <button class="active" onclick="openTab('complaint')">PF Complaint Generator</button>
+  <button onclick="openTab('slip')">Salary Slip Upload</button>
+  <button onclick="openTab('hrreport')">Anonymous HR Report</button>
+  <button onclick="openTab('law')">Law Section Explain</button>
+  <button onclick="openTab('chatbot')">Ask PF Guard</button>
+</div><div id="complaint" class="tab-content active">
+  <h2>🛡️ PF Complaint Generator</h2>
+  <input id="name" placeholder="Your Name" />
+  <input id="company" placeholder="Company Name" />
+  <input id="uan" placeholder="UAN Number" />
+  <input id="salary" placeholder="Salary" />
+  <select id="issue">
+    <option>PF cut ho raha par employer share nahi de raha</option>
+    <option>PF suddenly band ho gaya</option>
+    <option>Naya employee hoon, PF nahi mila</option>
+  </select>
+  <textarea id="extra" placeholder="Extra notes (optional)"></textarea>
+  <button class="action" onclick="generateComplaint()">Download Complaint PDF</button>
+</div><div id="slip" class="tab-content">
+  <h2>📂 Salary Slip Upload Checker</h2>
+  <input type="file" id="salarySlip" accept=".txt,.pdf,.doc" />
+  <button class="action" onclick="checkSlip()">Check PF Word</button>
+  <p id="slipResult"></p>
+</div><div id="hrreport" class="tab-content">
+  <h2>🕵️ Anonymous HR Report</h2>
+  <input id="hrname" placeholder="HR ka Naam (optional)" />
+  <textarea id="hrreason" placeholder="Complaint reason"></textarea>
+  <button class="action" onclick="fakeAlert()">Send Anonymous Report</button>
+</div><div id="law" class="tab-content">
+  <h2>📘 Law Section - EPF Explained</h2>
+  <ul>
+    <li><strong>Section 6:</strong> Employer + Employee = 12% + 12%</li>
+    <li><strong>Section 12:</strong> No deduction without share</li>
+    <li><strong>15,000 Rule:</strong> Salary above ₹15,000 = optional PF</li>
+  </ul>
+</div><div id="chatbot" class="tab-content">
+  <h2>🤖 Ask PF Guard</h2>
+  <input id="userQ" placeholder="Ask a question..." />
+  <button class="action" onclick="chatBotReply()">Ask</button>
+  <p id="chatAnswer"></p>
+</div><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script>
+function openTab(tab) {
+  document.querySelectorAll('.tab-btns button').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+  document.querySelector(`[onclick="openTab('${tab}')"]`).classList.add('active');
+  document.getElementById(tab).classList.add('active');
+}
+
+async function generateComplaint() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const n = document.getElementById('name').value;
+  const c = document.getElementById('company').value;
+  const u = document.getElementById('uan').value;
+  const s = document.getElementById('salary').value;
+  const i = document.getElementById('issue').value;
+  const e = document.getElementById('extra').value;
+
+  const complaint = `To EPFO,\n\nI, ${n}, employee of ${c}, UAN ${u}, salary ₹${s}, would like to raise complaint: ${i}.\n\n${e}\n\nPlease investigate.\n\nThanks.`;
+  doc.text(complaint, 10, 10);
+  doc.save("PF_Complaint.pdf");
+}
+
+function checkSlip() {
+  const file = document.getElementById("salarySlip").files[0];
+  if (!file) return alert("Upload a file");
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    document.getElementById("slipResult").innerText =
+      text.toLowerCase().includes("pf") ? "✅ PF word found in salary slip." : "❌ PF word not found.";
+  };
+  reader.readAsText(file);
+}
+
+function fakeAlert() {
+  const h = document.getElementById("hrname").value;
+  const r = document.getElementById("hrreason").value;
+  alert(`✅ Anonymous Report Sent for ${h || "Unnamed HR"}: ${r}`);
+}
+
+function chatBotReply() {
+  const q = document.getElementById("userQ").value.toLowerCase();
+  let a = "I am still learning. Try asking about PF limit or EPF rules.";
+  if (q.includes("limit")) a = "PF limit is ₹15,000 basic salary. Above that it's optional.";
+  else if (q.includes("share")) a = "Employer and employee both contribute 12% under EPF.";
+  document.getElementById("chatAnswer").innerText = a;
+}
+</script></body>
+</html>
