@@ -1,0 +1,88 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Service Book - Papa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #4B0082;
+    }
+    .field {
+      margin-bottom: 12px;
+    }
+    .label {
+      font-weight: bold;
+    }
+    .value {
+      margin-left: 10px;
+      color: #555;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #4B0082;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Vakratunda Mahakaya</h1>
+  <p style="text-align:center; font-style:italic;">
+    Vakratunda Mahakaya Suryakoti Samaprabha <br>
+    Nirvighnam Kurume Deva Sarva Karyeshu Sarvada
+  </p>
+
+  <h2>Digital Service Book</h2>
+  <div class="card" id="serviceBook">
+    <div class="field"><span class="label">Name:</span><span class="value">[Papa's Full Name]</span></div>
+    <div class="field"><span class="label">Date of Birth:</span><span class="value">[DOB]</span></div>
+    <div class="field"><span class="label">Department:</span><span class="value">[Water Resources Department]</span></div>
+    <div class="field"><span class="label">Designation:</span><span class="value">[Deputy Executive Engineer]</span></div>
+    <div class="field"><span class="label">Order No.:</span><span class="value">[Order Number]</span></div>
+    <div class="field"><span class="label">Date of Appointment:</span><span class="value">[Appointment Date]</span></div>
+    <div class="field"><span class="label">Sl. No. (Gradation):</span><span class="value">[Gradation Sl No]</span></div>
+    <div class="field"><span class="label">Date of Retirement:</span><span class="value">30 April 2019</span></div>
+  </div>
+
+  <button onclick="downloadPDF()">📄 Download as PDF</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let content = document.getElementById("serviceBook").innerText;
+      doc.text("Digital Service Book", 10, 10);
+      doc.text(content, 10, 20);
+      doc.save("Service_Book_Papa.pdf");
+    }
+  </script>
+
+</body>
+</html>
