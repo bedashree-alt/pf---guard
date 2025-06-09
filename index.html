@@ -1,51 +1,76 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PF Guard - Multi-Tool</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f8f8f8; }
-    .tab-btns { display: flex; flex-wrap: wrap; background: #4b0082; }
-    .tab-btns button { flex: 1; padding: 12px; border: none; background: #4b0082; color: #fff; cursor: pointer; }
-    .tab-btns button.active { background: #6a0dad; }
-    .tab-content { display: none; padding: 20px; background: #fff; }
-    .tab-content.active { display: block; }
-    input, textarea, select { width: 100%; padding: 8px; margin: 10px 0; box-sizing: border-box; }
-    button.action, button {
-      background: #6a0dad; color: white; padding: 10px 16px; border: none; cursor: pointer;
-      font-size: 16px;
-    }
-    .result {
-      margin-top: 20px;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      display: inline-block;
-      color: black;
-    }
-    .link {
-      margin-top: 25px;
-      display: block;
-      color: #0077cc;
-      font-weight: bold;
-      text-decoration: none;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PF Guard Combined</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+    padding: 20px;
+  }
+  .tab-btns {
+    display: flex;
+    background: #4b0082;
+  }
+  .tab-btns button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #4b0082;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .tab-btns button.active {
+    background: #6a0dad;
+  }
+  .tab-content {
+    display: none;
+    background: white;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  input, button, select, textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+  }
+  button {
+    background-color: #5A20CB;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .result {
+    margin-top: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+  }
+  a.gov-link {
+    display: block;
+    margin-top: 15px;
+    color: #0077cc;
+    font-weight: bold;
+    text-decoration: none;
+  }
+</style>
 </head>
 <body>
 
 <div class="tab-btns">
-  <button class="active" onclick="openTab('compliance')">PF Compliance Checker</button>
-  <button onclick="openTab('complaint')">PF Complaint Generator</button>
-  <button onclick="openTab('slip')">Salary Slip Upload</button>
-  <button onclick="openTab('hrreport')">Anonymous HR Report</button>
-  <button onclick="openTab('law')">Law Section Explain</button>
-  <button onclick="openTab('chatbot')">Ask PF Guard</button>
+  <button class="active" onclick="openTab('basicCalc')">PF Basic Calculator</button>
+  <button onclick="openTab('multiTool')">PF Multi-Tool</button>
 </div>
 
-<!-- Tab 1: PF Compliance Checker (Code 1 merged) -->
-<div id="compliance" class="tab-content active">
+<div id="basicCalc" class="tab-content active">
   <h2>PF Guard – Compliance Checker</h2>
   <p>Enter your salary to calculate PF contributions</p>
 
@@ -55,29 +80,155 @@
 
   <div class="result" id="pfOutput"></div>
 
-  <a class="link" href="https://epfigms.gov.in/" target="_blank" rel="noopener noreferrer">
-    🔗 File Complaint to EPFO Grievance Portal
-  </a>
+  <a href="https://epfigms.gov.in/" target="_blank" class="gov-link">🔗 File Complaint to EPFO Grievance Portal</a>
+
+  <script>
+    function calculatePF() {
+      let salary = parseFloat(document.getElementById("salary").value);
+      let employerGiven = parseFloat(document.getElementById("actualEmployer").value);
+
+      if (!salary || !employerGiven) {
+        alert("Please enter all details correctly.");
+        return;
+      }
+
+      let empShare = salary * 0.12;
+      let expectedEmployerShare = salary * 0.12;
+      let difference = expectedEmployerShare - employerGiven;
+
+      let message = `
+        <strong>Employee Share:</strong> ₹${empShare.toFixed(2)}<br>
+        <strong>Expected Employer Share:</strong> ₹${expectedEmployerShare.toFixed(2)}<br>
+        <strong>Given by Employer:</strong> ₹${employerGiven.toFixed(2)}<br>
+        <strong>Difference:</strong> ₹${difference.toFixed(2)}<br><br>
+      `;
+
+      if (difference > 0.1) {
+        message += "<span style='color:red;'>❌ Your employer may be underpaying PF. Consider filing a complaint.</span>";
+      } else {
+        message += "<span style='color:green;'>✅ PF seems correct. You're safe!</span>";
+      }
+
+      document.getElementById("pfOutput").innerHTML = message;
+    }
+  </script>
 </div>
 
-<!-- Tab 2: PF Complaint Generator -->
-<div id="complaint" class="tab-content">
-  <h2>🛡️ PF Complaint Generator</h2>
-  <input id="name" placeholder="Your Name" />
-  <input id="company" placeholder="Company Name" />
-  <input id="uan" placeholder="UAN Number" />
-  <input id="salaryComplaint" placeholder="Salary" />
-  <select id="issue">
-    <option>PF cut ho raha par employer share nahi de raha</option>
-    <option>PF suddenly band ho gaya</option>
-    <option>Naya employee hoon, PF nahi mila</option>
-  </select>
-  <textarea id="extra" placeholder="Extra notes (optional)"></textarea>
-  <button class="action" onclick="generateComplaint()">Download Complaint PDF</button>
+<div id="multiTool" class="tab-content">
+  <h2>PF Guard – Multi-Tool</h2>
+
+  <div class="tab-btns" style="margin-bottom:10px;">
+    <button class="active" onclick="openSubTab('complaint', this)">PF Complaint Generator</button>
+    <button onclick="openSubTab('slip', this)">Salary Slip Upload</button>
+    <button onclick="openSubTab('hrreport', this)">Anonymous HR Report</button>
+    <button onclick="openSubTab('law', this)">Law Section Explain</button>
+    <button onclick="openSubTab('chatbot', this)">Ask PF Guard</button>
+  </div>
+
+  <div id="complaint" class="tab-content active" style="border:none; padding:0;">
+    <input id="name" placeholder="Your Name" />
+    <input id="company" placeholder="Company Name" />
+    <input id="uan" placeholder="UAN Number" />
+    <input id="salary2" placeholder="Salary" />
+    <select id="issue">
+      <option>PF cut ho raha par employer share nahi de raha</option>
+      <option>PF suddenly band ho gaya</option>
+      <option>Naya employee hoon, PF nahi mila</option>
+    </select>
+    <textarea id="extra" placeholder="Extra notes (optional)"></textarea>
+    <button onclick="generateComplaint()">Download Complaint PDF</button>
+  </div>
+
+  <div id="slip" class="tab-content" style="border:none; padding:0;">
+    <input type="file" id="salarySlip" accept=".txt,.pdf,.doc" />
+    <button onclick="checkSlip()">Check PF Word</button>
+    <p id="slipResult"></p>
+  </div>
+
+  <div id="hrreport" class="tab-content" style="border:none; padding:0;">
+    <input id="hrname" placeholder="HR ka Naam (optional)" />
+    <textarea id="hrreason" placeholder="Complaint reason"></textarea>
+    <button onclick="fakeAlert()">Send Anonymous Report</button>
+  </div>
+
+  <div id="law" class="tab-content" style="border:none; padding:0;">
+    <ul>
+      <li><strong>Section 6:</strong> Employer + Employee = 12% + 12%</li>
+      <li><strong>Section 12:</strong> No deduction without share</li>
+      <li><strong>15,000 Rule:</strong> Salary above ₹15,000 = optional PF</li>
+    </ul>
+  </div>
+
+  <div id="chatbot" class="tab-content" style="border:none; padding:0;">
+    <input id="userQ" placeholder="Ask a question..." />
+    <button onclick="chatBotReply()">Ask</button>
+    <p id="chatAnswer"></p>
+  </div>
+
+  <a href="https://epfigms.gov.in/" target="_blank" class="gov-link">🔗 File Complaint to EPFO Grievance Portal</a>
 </div>
 
-<!-- Tab 3: Salary Slip Upload -->
-<div id="slip" class="tab-content">
-  <h2>📂 Salary Slip Upload Checker</h2>
-  <input type="file" id="salarySlip" accept=".txt,.pdf,.doc" />
-  <button class="action" onclick="c
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  function openTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    document.querySelectorAll('.tab-btns button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[onclick="openTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+  }
+
+  function openSubTab(tabName, btn) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const container = btn.closest('#multiTool');
+    container.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    container.querySelector('#' + tabName).classList.add('active');
+  }
+
+  async function generateComplaint() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const n = document.getElementById('name').value;
+    const c = document.getElementById('company').value;
+    const u = document.getElementById('uan').value;
+    const s = document.getElementById('salary2').value;
+    const i = document.getElementById('issue').value;
+    const e = document.getElementById('extra').value;
+
+    const complaint = `To EPFO,\n\nI, ${n}, employee of ${c}, UAN ${u}, salary ₹${s}, would like to raise complaint: ${i}.\n\n${e}\n\nPlease investigate.\n\nThanks.`;
+    doc.text(complaint, 10, 10);
+    doc.save("PF_Complaint.pdf");
+  }
+
+  function checkSlip() {
+    const file = document.getElementById("salarySlip").files[0];
+    if (!file) return alert("Upload a file");
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const text = e.target.result;
+      document.getElementById("slipResult").innerText =
+        text.toLowerCase().includes("pf") ? "✅ PF word found in salary slip." : "❌ PF word not found.";
+    };
+    reader.readAsText(file);
+  }
+
+  function fakeAlert() {
+    const h = document.getElementById("hrname").value;
+    const r = document.getElementById("hrreason").value;
+    alert(`✅ Anonymous Report Sent for ${h || "Unnamed HR"}: ${r}`);
+  }
+
+  function chatBotReply() {
+    const q = document.getElementById("userQ").value.toLowerCase();
+    let a = "I am still learning. Try asking about PF limit or EPF rules.";
+    if (q.includes("limit")) a = "PF limit is ₹15,000 basic salary. Above that it's optional.";
+    else if (q.includes("share")) a = "Employer and employee both contribute 12% under EPF.";
+    document.getElementById("chatAnswer").innerText = a;
+  }
+</script>
+
+</body>
+       </html>
+     
