@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PF Guard Combined</title>
+  <title>PF Guard with Pension</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,9 +70,10 @@
   <button class="active" onclick="openTab('basicCalc')">PF Basic Calculator</button>
   <button onclick="openTab('multiTool')">PF Multi-Tool</button>
   <button onclick="openTab('pfPercent')">PF % Breakdown</button>
+  <button onclick="openTab('pensionCalc')">Pension % Breakdown</button>
 </div>
 
-<!-- Tab 1: PF Basic Calculator -->
+<!-- Tab 1 -->
 <div id="basicCalc" class="tab-content active">
   <h2>PF Guard – Compliance Checker</h2>
   <p>Enter your salary to calculate PF contributions</p>
@@ -80,13 +81,12 @@
   <input type="number" id="actualEmployer" placeholder="Employer Share (from slip ₹)" />
   <button onclick="calculatePF()">Check PF</button>
   <div class="result" id="pfOutput"></div>
-  <a href="https://epfigms.gov.in/" target="_blank" class="gov-link">🔗 File Complaint to EPFO Grievance Portal</a>
+  <a href="https://epfigms.gov.in/" target="_blank" class="gov-link">🔗 File Complaint to EPFO</a>
 </div>
 
-<!-- Tab 2: PF Multi-Tool -->
+<!-- Tab 2 -->
 <div id="multiTool" class="tab-content">
   <h2>PF Guard – Multi-Tool</h2>
-
   <div class="tab-btns" style="margin-bottom:10px;">
     <button class="active" onclick="openSubTab('complaint', this)">PF Complaint Generator</button>
     <button onclick="openSubTab('slip', this)">Salary Slip Upload</button>
@@ -134,16 +134,23 @@
     <button onclick="chatBotReply()">Ask</button>
     <p id="chatAnswer"></p>
   </div>
-
-  <a href="https://epfigms.gov.in/" target="_blank" class="gov-link">🔗 File Complaint to EPFO Grievance Portal</a>
 </div>
 
-<!-- Tab 3: PF Percentage Breakdown -->
+<!-- Tab 3 -->
 <div id="pfPercent" class="tab-content">
-  <h2>Auto PF Percentage Breakdown</h2>
+  <h2>PF % Breakdown</h2>
   <input type="number" id="percentSalary" placeholder="Enter Basic Salary (₹)" />
   <div id="percentOutput" class="result">
     <em>Enter salary to see the percentage breakdown...</em>
+  </div>
+</div>
+
+<!-- Tab 4 -->
+<div id="pensionCalc" class="tab-content">
+  <h2>Pension Contribution Breakdown</h2>
+  <input type="number" id="pensionSalary" placeholder="Enter Basic Salary (₹)" />
+  <div id="pensionOutput" class="result">
+    <em>Enter salary to see EPS contribution...</em>
   </div>
 </div>
 
@@ -227,23 +234,33 @@
     document.getElementById("chatAnswer").innerText = a;
   }
 
-  // PF Percent Breakdown Logic
-  const percentInput = document.getElementById("percentSalary");
-  const percentOutput = document.getElementById("percentOutput");
-
-  percentInput.addEventListener("input", () => {
-    const sal = parseFloat(percentInput.value);
+  document.getElementById("percentSalary").addEventListener("input", function () {
+    const sal = parseFloat(this.value);
     if (!sal || sal < 0) {
       percentOutput.innerHTML = "<em>Please enter a valid salary amount.</em>";
       return;
     }
     const empShare = sal * 0.12;
     const employerShare = sal * 0.12;
-    const totalPF = sal * 0.24;
+    const total = sal * 0.24;
     percentOutput.innerHTML = `
       <strong>Employee PF (12%):</strong> ₹${empShare.toFixed(2)}<br>
       <strong>Employer PF (12%):</strong> ₹${employerShare.toFixed(2)}<br>
-      <strong>Total PF (24%):</strong> ₹${totalPF.toFixed(2)}
+      <strong>Total PF (24%):</strong> ₹${total.toFixed(2)}
+    `;
+  });
+
+  document.getElementById("pensionSalary").addEventListener("input", function () {
+    const sal = parseFloat(this.value);
+    if (!sal || sal < 0) {
+      pensionOutput.innerHTML = "<em>Please enter valid salary amount.</em>";
+      return;
+    }
+    const limit = Math.min(15000, sal);
+    const pension = limit * 0.0833;
+    pensionOutput.innerHTML = `
+      <strong>Pension (8.33% of ₹${limit}):</strong> ₹${pension.toFixed(2)}<br>
+      <strong>From Employer PF Contribution.</strong>
     `;
   });
 </script>
